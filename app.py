@@ -1,67 +1,48 @@
 import streamlit as st
-import requests
+import pandas as pd
+import plotly.express as px
 
-# ========== CONFIG ==========
-
+# ========== CONFIGURAÇÕES ========== #
 st.set_page_config(page_title="Enrico Tráfego Profissional", page_icon="📊", layout="wide")
 
-st.markdown("""
-<div style="text-align: center;">
-    <img src="https://raw.githubusercontent.com/guieenrico/dashboard-clientes/main/logo-branca.png" width="300"/>
-</div>
-""", unsafe_allow_html=True)
+# ========== LOGO E TÍTULO ========== #
+col_logo, col_titulo = st.columns([1, 4])
+with col_logo:
+    st.image("https://raw.githubusercontent.com/guieenrico/dashboard-clientes/main/logo-branca.png", width=200)
+with col_titulo:
+    st.markdown("## Enrico Tráfego Profissional")
+    st.markdown("### Painel de Resultados de Campanhas")
 
-st.markdown("<h2 style='text-align: center;'>Relatório de Campanhas via API do Facebook</h2>", unsafe_allow_html=True)
 st.markdown("---")
 
-# ========== TOKEN E CONTA ==========
+# ========== DADOS ========== #
+df = pd.read_csv("[Ricci-Burguer-Feliz-Natal-2-+-Bysell]-Campanhas-1-de-mar-de-2025-25-de-mar-de-2025.csv")
 
-access_token = "EAAQym7OJhWgBOxZC5zYGhxMYPJUqSaZBj4yZAuvmMnOlIpvpK7wRSHo1hyhTT6PvbLFgToRucZAZBD1s23azDdZAuNFIEQcV2zoa6swp94W8mjZBVnw4Yy9qERKKve1z6F0ASYmqVQ5jx2ErUsynFM4LCHaklOQVFnyH7DxsOVqrJ6HiuQXizNymtNN7ReZBUuDulAuxOPRoEb2XYYEbQ98dXJyMZBBbiHwG5"
-ad_account_id = "1060262399036879"
+# ========== SELECIONAR CAMPANHA ========== #
+campanhas = df["Nome da campanha"].unique()
+campanha_selecionada = st.selectbox("🧠 Escolha a campanha", campanhas)
+df_campanha = df[df["Nome da campanha"] == campanha_selecionada].copy()
 
-# ========== BUSCA TODAS AS CAMPANHAS ==========
+# ========== MÉTRICAS ========== #
+st.markdown(f"### 📊 Dados da campanha: **{campanha_selecionada}**")
+col1, col2, col3, col4 = st.columns(4)
+col1.metric("Total Gasto", f'R$ {df_campanha["Valor usado (BRL)"].sum():,.2f}')
+col2.metric("Total de Compras", int(df_campanha["Compras"].sum()))
+col3.metric("ROAS Médio", f'{df_campanha["Retorno sobre o investimento em publicidade (ROAS) das compras"].mean():.2f}')
+col4.metric("💰 Valor de Vendas", f'R$ {df_campanha["Valor de conversão da compra"].sum():,.2f}')
 
-url = f"https://graph.facebook.com/v19.0/act_{ad_account_id}/campaigns"
-params = {
-    "fields": "name",
-    "access_token": access_token
-}
-response = requests.get(url, params=params).json()
-campanhas = response.get("data", [])
+# ========== GRÁFICO ========== #
+st.markdown("### 📈 ROAS por Campanha")
+fig = px.bar(df, x="Nome da campanha", y="Retorno sobre o investimento em publicidade (ROAS) das compras",
+             color="Nome da campanha", text="Retorno sobre o investimento em publicidade (ROAS) das compras")
+fig.update_traces(texttemplate='%{text:.2f}', textposition='outside')
+fig.update_layout(yaxis_title="ROAS", xaxis_title="Campanha")
+st.plotly_chart(fig, use_container_width=True)
 
-# ========== SELECTBOX POR NOME ==========
-nomes = [camp["name"] for camp in campanhas]
-nome_escolhido = st.selectbox("Escolha a campanha:", nomes)
+# ========== TABELA ========== #
+st.markdown("### 📋 Dados Detalhados")
+st.dataframe(df_campanha, use_container_width=True)
 
-# ========== BUSCA ID SELECIONADO ==========
-id_escolhido = next((camp["id"] for camp in campanhas if camp["name"] == nome_escolhido), None)
-
-if not id_escolhido:
-    st.warning("ID da campanha não encontrado.")
-else:
-    # ========== DADOS DA CAMPANHA ==========
-    url_detalhes = f"https://graph.facebook.com/v19.0/{id_escolhido}/insights"
-    params_detalhes = {
-        "access_token": access_token,
-        "fields": "campaign_name,spend,impressions,reach,actions",
-        "level": "campaign",
-        "time_increment": 0
-    }
-
-    dados = requests.get(url_detalhes, params=params_detalhes).json()
-    resultados = dados.get("data", [])
-
-    if resultados:
-        dados = resultados[0]
-        st.markdown(f"### 📊 {dados.get('campaign_name')}")
-        st.markdown(f"**💸 Gasto:** R$ {float(dados.get('spend', 0)):,.2f}")
-        st.markdown(f"**📢 Impressões:** {dados.get('impressions', '-')}")    
-        st.markdown(f"**👥 Alcance:** {dados.get('reach', '-')}")
-
-        if "actions" in dados:
-            for acao in dados["actions"]:
-                nome = acao["action_type"]
-                valor = acao["value"]
-                st.markdown(f"**{nome.replace('_', ' ').capitalize()}:** {valor}")
-    else:
-        st.warning("Nenhum dado encontrado para essa campanha.")
+# ========== RODAPÉ ========== #
+st.markdown("---")
+st.markdown("<p style='text-align: center; font-size: 14px;'>Desenvolvido por <b>Enrico Tráfego Profissional</b> • Painel versão beta</p>", unsafe_allow_html=True)
