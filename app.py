@@ -15,7 +15,7 @@ st.markdown("<h2 style='text-align: center;'>Relatório de Campanhas via API do 
 st.markdown("---")
 
 # ========== TOKEN E CONFIG ==========
-access_token = "EAAQym7OJhWgBO614jRO0nq0Q68JpQq3f9RX4cnF9zO5YAe2lPQqzE9bjYziy8Yws0i0WRntiCc1ZAS6GYhye6XfuSMXKBSPRZAN2dlcJXBmySftvdRXmZCHlu63ZBCTNkvrE7WjyZB2Y2It8EbfRvSowGFnfHvJfrhWHABUAXWDAZCLwey68O9KgdWH0ZA6KKulYHgiGZCAmssv0UE0ZD"
+access_token = "EAAQym7OJhWgBOxZC5zYGhxMYPJUqSaZBj4yZAuvmMnOlIpvpK7wRSHo1hyhTT6PvbLFgToRucZAZBD1s23azDdZAuNFIEQcV2zoa6swp94W8mjZBVnw4Yy9qERKKve1z6F0ASYmqVQ5jx2ErUsynFM4LCHaklOQVFnyH7DxsOVqrJ6HiuQXizNymtNN7ReZBUuDulAuxOPRoEb2XYYEbQ98dXJyMZBBbiHwG5"
 ad_account_id = "1060262399036879"
 
 # ========== ENTRADA ==========
