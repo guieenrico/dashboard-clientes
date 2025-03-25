@@ -16,24 +16,27 @@ st.markdown("---")
 
 # ========== TOKEN E CONFIG ==========
 access_token = "EAAQym7OJhWgBOxZC5zYGhxMYPJUqSaZBj4yZAuvmMnOlIpvpK7wRSHo1hyhTT6PvbLFgToRucZAZBD1s23azDdZAuNFIEQcV2zoa6swp94W8mjZBVnw4Yy9qERKKve1z6F0ASYmqVQ5jx2ErUsynFM4LCHaklOQVFnyH7DxsOVqrJ6HiuQXizNymtNN7ReZBUuDulAuxOPRoEb2XYYEbQ98dXJyMZBBbiHwG5"
-ad_account_id = "1060262399036879"
+ad_account_id = "act_1060262399036879"
 
-# ========== ENTRADA ==========
-campaign_name = st.selectbox("Escolha a campanha:", ["[ALC-01]", "[Conversões em Feliz Natal - MT]"])
-
-# ========== BUSCA DE DADOS ==========
-def buscar_dados_da_campanha(nome_campanha):
-    url = f"https://graph.facebook.com/v19.0/act_{ad_account_id}/campaigns"
+# ========== BUSCA DE CAMPANHAS ==========
+def buscar_lista_campanhas():
+    url = f"https://graph.facebook.com/v19.0/{ad_account_id}/campaigns"
     params = {
         "fields": "name",
         "access_token": access_token
     }
+    resposta = requests.get(url, params=params).json()
+    campanhas = resposta.get("data", [])
+    return campanhas
 
-    campanhas = requests.get(url, params=params).json()
-    campanhas_lista = campanhas.get("data", [])
+campanhas = buscar_lista_campanhas()
+nomes_campanhas = [campanha["name"] for campanha in campanhas] if campanhas else []
+campaign_name = st.selectbox("Escolha a campanha:", nomes_campanhas)
 
+# ========== BUSCA DE DADOS ==========
+def buscar_dados_da_campanha(nome_campanha):
     campanha_id = None
-    for campanha in campanhas_lista:
+    for campanha in campanhas:
         if campanha["name"].lower() == nome_campanha.lower():
             campanha_id = campanha["id"]
             break
