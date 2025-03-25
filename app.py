@@ -2,9 +2,9 @@ import streamlit as st
 import requests
 
 # ========== CONFIG ==========
+
 st.set_page_config(page_title="Enrico Tráfego Profissional", page_icon="📊", layout="wide")
 
-# ========== LOGO ==========
 st.markdown("""
 <div style="text-align: center;">
     <img src="https://raw.githubusercontent.com/guieenrico/dashboard-clientes/main/logo-branca.png" width="300"/>
@@ -14,37 +14,33 @@ st.markdown("""
 st.markdown("<h2 style='text-align: center;'>Relatório de Campanhas via API do Facebook</h2>", unsafe_allow_html=True)
 st.markdown("---")
 
-# ========== TOKEN E CONFIG ==========
+# ========== TOKEN E CONTA ==========
+
 access_token = "EAAQym7OJhWgBOxZC5zYGhxMYPJUqSaZBj4yZAuvmMnOlIpvpK7wRSHo1hyhTT6PvbLFgToRucZAZBD1s23azDdZAuNFIEQcV2zoa6swp94W8mjZBVnw4Yy9qERKKve1z6F0ASYmqVQ5jx2ErUsynFM4LCHaklOQVFnyH7DxsOVqrJ6HiuQXizNymtNN7ReZBUuDulAuxOPRoEb2XYYEbQ98dXJyMZBBbiHwG5"
-ad_account_id = "act_1060262399036879"
+ad_account_id = "1060262399036879"
 
-# ========== BUSCA DE CAMPANHAS ==========
-def buscar_lista_campanhas():
-    url = f"https://graph.facebook.com/v19.0/{ad_account_id}/campaigns"
-    params = {
-        "fields": "name",
-        "access_token": access_token
-    }
-    resposta = requests.get(url, params=params).json()
-    campanhas = resposta.get("data", [])
-    return campanhas
+# ========== BUSCA TODAS AS CAMPANHAS ==========
 
-campanhas = buscar_lista_campanhas()
-nomes_campanhas = [campanha["name"] for campanha in campanhas] if campanhas else []
-campaign_name = st.selectbox("Escolha a campanha:", nomes_campanhas)
+url = f"https://graph.facebook.com/v19.0/act_{ad_account_id}/campaigns"
+params = {
+    "fields": "name",
+    "access_token": access_token
+}
+response = requests.get(url, params=params).json()
+campanhas = response.get("data", [])
 
-# ========== BUSCA DE DADOS ==========
-def buscar_dados_da_campanha(nome_campanha):
-    campanha_id = None
-    for campanha in campanhas:
-        if campanha["name"].lower() == nome_campanha.lower():
-            campanha_id = campanha["id"]
-            break
+# ========== SELECTBOX POR NOME ==========
+nomes = [camp["name"] for camp in campanhas]
+nome_escolhido = st.selectbox("Escolha a campanha:", nomes)
 
-    if not campanha_id:
-        return None, f"Nenhum dado encontrado para a campanha: {nome_campanha}"
+# ========== BUSCA ID SELECIONADO ==========
+id_escolhido = next((camp["id"] for camp in campanhas if camp["name"] == nome_escolhido), None)
 
-    url_detalhes = f"https://graph.facebook.com/v19.0/{campanha_id}/insights"
+if not id_escolhido:
+    st.warning("ID da campanha não encontrado.")
+else:
+    # ========== DADOS DA CAMPANHA ==========
+    url_detalhes = f"https://graph.facebook.com/v19.0/{id_escolhido}/insights"
     params_detalhes = {
         "access_token": access_token,
         "fields": "campaign_name,spend,impressions,reach,actions",
@@ -53,26 +49,19 @@ def buscar_dados_da_campanha(nome_campanha):
     }
 
     dados = requests.get(url_detalhes, params=params_detalhes).json()
-    return dados.get("data", []), None
+    resultados = dados.get("data", [])
 
-# ========== EXIBIÇÃO ==========
-dados, erro = buscar_dados_da_campanha(campaign_name)
+    if resultados:
+        dados = resultados[0]
+        st.markdown(f"### 📊 {dados.get('campaign_name')}")
+        st.markdown(f"**💸 Gasto:** R$ {float(dados.get('spend', 0)):,.2f}")
+        st.markdown(f"**📢 Impressões:** {dados.get('impressions', '-')}")    
+        st.markdown(f"**👥 Alcance:** {dados.get('reach', '-')}")
 
-if erro:
-    st.warning(erro)
-elif dados:
-    dados = dados[0]
-
-    st.markdown(f"### 📊 {dados.get('campaign_name')}")
-    st.markdown(f"**💸 Gasto:** R$ {float(dados.get('spend', 0)):,.2f}")
-    st.markdown(f"**📢 Impressões:** {dados.get('impressions', '-')}")
-    st.markdown(f"**👥 Alcance:** {dados.get('reach', '-')}")
-
-    # Listar ações específicas
-    if "actions" in dados:
-        for acao in dados["actions"]:
-            nome = acao["action_type"]
-            valor = acao["value"]
-            st.markdown(f"**{nome.replace('_', ' ').capitalize()}:** {valor}")
-else:
-    st.info("Buscando dados...")
+        if "actions" in dados:
+            for acao in dados["actions"]:
+                nome = acao["action_type"]
+                valor = acao["value"]
+                st.markdown(f"**{nome.replace('_', ' ').capitalize()}:** {valor}")
+    else:
+        st.warning("Nenhum dado encontrado para essa campanha.")
