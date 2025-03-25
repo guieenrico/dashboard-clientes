@@ -1,4 +1,6 @@
 cliente,tipo_cliente,campanha,gasto,compras,roas,valor_conversao,cliques_wpp,visitas_site,mensagens,vendas_estimadas,agendamentos,visitas,propostas,vendas,valor_vendas
 Ricci Burguer,ecom,Promoção Verão,520.0,42.0,6.5,3380.0,,,,,,,,,
 João Carvalho,imoveis,Casa Condomínio Sul,1300.0,,,,85.0,,,,15.0,10.0,3.0,1.0,780000.0
+João Carvalho,imoveis,Apto Alto Padrão,980.0,,,,64.0,,,,12.0,8.0,2.0,1.0,650000.0
 Porto de Areia Santa Eliza,construcao,Areia Fina Julho,420.0,,,,47.0,110.0,38.0,9300.0,,,,,
+Porto de Areia Santa Eliza,construcao,Cimento Promoção,510.0,,,,52.0,135.0,41.0,10700.0,,,,,
