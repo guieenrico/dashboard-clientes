@@ -1,6 +1,13 @@
-cliente,tipo_cliente,campanha,gasto,compras,roas,valor_conversao,cliques_wpp,visitas_site,mensagens,vendas_estimadas,agendamentos,visitas,propostas,vendas,valor_vendas
-Ricci Burguer,ecom,Promoção Verão,520.0,42.0,6.5,3380.0,,,,,,,,,
-João Carvalho,imoveis,Casa Condomínio Sul,1300.0,,,,85.0,,,,15.0,10.0,3.0,1.0,780000.0
-João Carvalho,imoveis,Apto Alto Padrão,980.0,,,,64.0,,,,12.0,8.0,2.0,1.0,650000.0
-Porto de Areia Santa Eliza,construcao,Areia Fina Julho,420.0,,,,47.0,110.0,38.0,9300.0,,,,,
-Porto de Areia Santa Eliza,construcao,Cimento Promoção,510.0,,,,52.0,135.0,41.0,10700.0,,,,,
+cliente,tipo_cliente,campanha,gasto,compras,roas,valor_conversao,cliques_wpp,visitas_site,mensagens,vendas_estimadas,agendamentos,visitas,propostas,vendas,valor_vendas,alcance,leads
+Ricci Burguer,ecom,[Conversões em Feliz Natal - MT],5418.3,657,8.3939,45480.67,,,,,,,,,,,
+Ricci Burguer,ecom,[Alc -01],504.87,22,3.391091,1712.06,,,,,,,,,,,
+João Carvalho,imoveis,[Alc 01],66.15,,,,,,,,,,,,,23787.0,
+João Carvalho,imoveis,[Mensagens WhatsApp],625.22,,,,,,65.0,,,,,,,,
+João Carvalho,imoveis,[Visitas ao Perfil do Instagram - trafego],941.59,,,,,,,,,2703.0,,,,,
+Porto de Areia Santa Eliza,construcao,[ CADASTRO - 01 ],1235.61,,,,,,,,,,,,,,45.0
+Porto de Areia Santa Eliza,construcao,[Alcance - 01],107.89,,,,,,,,,,,,,55581.0,
+Porto de Areia Santa Eliza,construcao,[Alcance] - [formato stories],109.95,,,,,,,,,,,,,57413.0,
+Porto de Areia Santa Eliza,construcao,[Engajamento - 01],46.95,,,,,,,,,,,,,,
+Porto de Areia Santa Eliza,construcao,[Visitas ao Perfil],78.16,,,,,,,,,190.0,,,,,
+Porto de Areia Santa Eliza,construcao,[Vídeo Instagram],287.215,,,,,,,,,,,,,,
+Porto de Areia Santa Eliza,construcao,[WhatsApp],144.16,,,,,,3.0,,,,,,,,
