@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -42,6 +41,7 @@ tipo = df_cliente["tipo_cliente"].iloc[0]
 
 # ========== MÉTRICAS POR TIPO DE CLIENTE ==========
 st.markdown(f"### 📊 Dados do cliente: **{cliente_selecionado}**")
+
 if tipo == "ecom":
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Total Gasto", f'R$ {df_cliente["gasto"].sum():,.2f}')
@@ -49,22 +49,41 @@ if tipo == "ecom":
     col3.metric("ROAS Médio", f'{df_cliente["roas"].mean():.2f}')
     col4.metric("💰 Valor de Vendas", f'R$ {df_cliente["valor_conversao"].sum():,.2f}')
 
-elif tipo in ["imovel", "branding_leads"]:
+elif tipo == "imoveis":
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Total Gasto", f'R$ {df_cliente["gasto"].sum():,.2f}')
-    col2.metric("Leads", int(df_cliente["leads"].sum()))
-    col3.metric("Alcance", int(df_cliente["alcance"].sum()))
-    col4.metric("Freq. Média", f'{df_cliente["freq"].mean():.2f}')
+    col2.metric("Cliques WhatsApp", int(df_cliente["cliques_wpp"].sum()))
+    col3.metric("Agendamentos", int(df_cliente["agendamentos"].sum()))
+    col4.metric("Visitas", int(df_cliente["visitas"].sum()))
 
-    st.markdown("### 👥 Novas Pessoas Alcançadas")
-    st.metric("Total", int(df_cliente["novas_pessoas"].sum()))
+    col5, col6 = st.columns(2)
+    col5.metric("Propostas", int(df_cliente["propostas"].sum()))
+    col6.metric("💰 Valor de Vendas", f'R$ {df_cliente["valor_vendas"].sum():,.2f}')
+
+elif tipo == "construcao":
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("Total Gasto", f'R$ {df_cliente["gasto"].sum():,.2f}')
+    col2.metric("Cliques WhatsApp", int(df_cliente["cliques_wpp"].sum()))
+    col3.metric("Mensagens Recebidas", int(df_cliente["mensagens"].sum()))
+    col4.metric("💬 Visitas no Site", int(df_cliente["visitas_site"].sum()))
+
+    st.metric("🧾 Vendas Estimadas", f'R$ {df_cliente["vendas_estimadas"].sum():,.2f}')
 
 # ========== GRÁFICO ==========
 st.markdown("### 📊 Gráfico por Campanha")
-coluna_grafico = "roas" if tipo == "ecom" else "leads"
-fig = px.bar(df_cliente, x="campanha", y=coluna_grafico, color="campanha", text=coluna_grafico)
-fig.update_traces(texttemplate='%{text:.2f}', textposition='outside')
-fig.update_layout(yaxis_title=coluna_grafico.upper(), xaxis_title="Campanha")
+
+if tipo == "ecom":
+    y_coluna = "roas"
+elif tipo == "imoveis":
+    y_coluna = "cliques_wpp"
+elif tipo == "construcao":
+    y_coluna = "mensagens"
+else:
+    y_coluna = "gasto"
+
+fig = px.bar(df_cliente, x="campanha", y=y_coluna, color="campanha", text=y_coluna)
+fig.update_traces(texttemplate='%{text}', textposition='outside')
+fig.update_layout(yaxis_title=y_coluna.upper(), xaxis_title="Campanha")
 st.plotly_chart(fig, use_container_width=True)
 
 # ========== TABELA ==========
