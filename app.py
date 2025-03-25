@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -13,7 +12,7 @@ st.set_page_config(
 # ========== LOGO ==========
 col_logo, col_titulo = st.columns([1, 4])
 with col_logo:
-    st.image("https://raw.githubusercontent.com/guieenrico/dashboard-clientes/main/logo-escura.png", width=180)
+    st.image("logo-escura.png", width=180)
 with col_titulo:
     st.markdown("## Enrico Tráfego Profissional")
     st.markdown("### Painel de Resultados de Campanhas")
